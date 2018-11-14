@@ -29,7 +29,7 @@ namespace BadgeBookAPI.Controllers
 
 
         [EnableCors("AllAccessCors")]
-        [HttpPost("{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<string>> getUserProfile(string id)
         {
             APIResponse response = new APIResponse();
@@ -41,12 +41,64 @@ namespace BadgeBookAPI.Controllers
                 {
                     throw new Exception("Invalid user ID");
                 }
+                UserData currentUserData = this.getUserData(currentUser.Id);
+                CompactIdentityUser compactDataUser = new CompactIdentityUser();
+                compactDataUser.Username = currentUser.UserName;
+                compactDataUser.Email = currentUser.Email;
+                compactDataUser.UID = currentUser.Id;
+
+                compactDataUser.UserData = currentUserData;
+                response.Data = compactDataUser;
+                return JsonConvert.SerializeObject(response);
             } catch(Exception e)
             {
                 response.Message = "Error: " + e.Message;
                 response.Success = false;
             }
             return JsonConvert.SerializeObject(response);
+        }
+
+        [EnableCors("AllAccessCors")]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<string>> setUserProfile(string id)
+        {
+            APIResponse response = new APIResponse();
+
+            try
+            {
+                IdentityUser currentUser = await _userManager.FindByIdAsync(id);
+                if (currentUser == null)
+                {
+                    throw new Exception("Invalid user ID");
+                }
+                UserData currentUserData = this.getUserData(currentUser.Id);
+                CompactIdentityUser compactDataUser = new CompactIdentityUser();
+                compactDataUser.Username = currentUser.UserName;
+                compactDataUser.Email = currentUser.Email;
+                compactDataUser.UID = currentUser.Id;
+
+                compactDataUser.UserData = currentUserData;
+                response.Data = compactDataUser;
+                return JsonConvert.SerializeObject(response);
+            }
+            catch (Exception e)
+            {
+                response.Message = "Error: " + e.Message;
+                response.Success = false;
+            }
+            return JsonConvert.SerializeObject(response);
+        }
+
+        /* UserData Function 
+         * Input - User ID
+         * Returns UserData Model of user ID
+         */
+        private UserData getUserData(string UID)
+        {
+            UserData currentUserData = _context.UserData.Where(c => c.UID.Equals(UID)).FirstOrDefault();
+            Profile profileData = _context.Profile.Where(c => c.UID.Equals(UID)).FirstOrDefault();
+            currentUserData.ProfileData = profileData;
+            return currentUserData;
         }
     }
 }

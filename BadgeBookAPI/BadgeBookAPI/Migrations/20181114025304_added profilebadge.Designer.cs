@@ -4,48 +4,22 @@ using BadgeBookAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BadgeBookAPI.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20181114025304_added profilebadge")]
+    partial class addedprofilebadge
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.1.3-rtm-32065")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("BadgeBookAPI.Models.Badge", b =>
-                {
-                    b.Property<string>("BadgeID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("BadgeName");
-
-                    b.Property<string>("ImageURL");
-
-                    b.HasKey("BadgeID");
-
-                    b.ToTable("Badge");
-                });
-
-            modelBuilder.Entity("BadgeBookAPI.Models.Profile", b =>
-                {
-                    b.Property<string>("ProfileID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Description");
-
-                    b.Property<string>("UID");
-
-                    b.HasKey("ProfileID");
-
-                    b.ToTable("Profile");
-                });
 
             modelBuilder.Entity("BadgeBookAPI.Models.UserData", b =>
                 {

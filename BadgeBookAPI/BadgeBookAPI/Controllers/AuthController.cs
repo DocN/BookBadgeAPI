@@ -57,10 +57,15 @@ namespace BadgeBookAPI.Controllers
                     newUserData.Country = model.Country;
                     newUserData.FirstName = model.FirstName;
                     newUserData.LastName = model.LastName;
-
+                    Profile ProfileData = new Profile();
+                    ProfileData.UID = newUser.Id;
+                    ProfileData.Description = "";
+                    newUserData.ProfileData = ProfileData;
                     DateTime newBirthday = new DateTime(model.BirthYear, model.BirthMonth, model.BirthDay);
                     newUserData.Birthday = newBirthday;
+                    _context.Profile.Add(ProfileData);
                     _context.UserData.Add(newUserData);
+                    
                     _context.SaveChanges();
                     response.Message = "Succesfully Registered " + newUser.UserName;
                     response.Success = true;

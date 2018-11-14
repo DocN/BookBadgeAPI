@@ -13,7 +13,9 @@ namespace BadgeBookAPI.Data
     {
        
         public DbSet<UserData> UserData { get; set; }
-       
+        public DbSet<Profile> Profile { get; set; }
+        public DbSet<Badge> Badge { get; set; }
+
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) : base(options)
         { }
 

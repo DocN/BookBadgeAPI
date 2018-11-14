@@ -14,5 +14,6 @@ namespace BadgeBookAPI.Models
         public string LastName { get; set; }
         public string Country { get; set; }
         public DateTime Birthday { get; set; }
+        public Profile ProfileData { get; set; }
     }
 }
