@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace BadgeBookAPI.Data
 {
@@ -33,8 +34,8 @@ namespace BadgeBookAPI.Data
             if (await userManager.FindByEmailAsync("user1") == null)
             {
                 IdentityUser newUser = new IdentityUser();
-                newUser.Email = "user1";
-                newUser.UserName = "user1";
+                newUser.Email = "user1@gmail.com";
+                newUser.UserName = "user1@gmail.com";
 
                 var result = await userManager.CreateAsync(newUser, "P@$$w0rd");
                 if (result.Succeeded)
@@ -47,7 +48,8 @@ namespace BadgeBookAPI.Data
                     newUserData.LastName = "bruce1";
                     Profile ProfileData = new Profile();
                     ProfileData.UID = newUser.Id;
-                    ProfileData.Description = "";
+                    ProfileData.Description = @"<p>My name is Earl. I am fast and write PHP for BCIT schools. here is my loooong story ...  . Here is my project screenshot <img src=""https://cdn3.iconfinder.com/data/icons/street-food-and-food-trucker-1/64/hamburger-fast-food-patty-bread-512.png"" alt=""Earl's project ""> </p>";
+                    ProfileData.Description = HttpUtility.HtmlEncode(ProfileData.Description);
                     newUserData.ProfileData = ProfileData;
                     DateTime newBirthday = new DateTime(1950, 10, 10);
                     newUserData.Birthday = newBirthday;
@@ -60,8 +62,8 @@ namespace BadgeBookAPI.Data
             if (await userManager.FindByEmailAsync("user2") == null)
             {
                 IdentityUser newUser = new IdentityUser();
-                newUser.Email = "user2";
-                newUser.UserName = "user2";
+                newUser.Email = "user2@gmail.com";
+                newUser.UserName = "user2@gmail.com";
                 var result = await userManager.CreateAsync(newUser, "P@$$w0rd");
                 if (result.Succeeded)
                 {
@@ -73,7 +75,8 @@ namespace BadgeBookAPI.Data
                     newUserData.LastName = "bruce2";
                     Profile ProfileData = new Profile();
                     ProfileData.UID = newUser.Id;
-                    ProfileData.Description = "";
+                    ProfileData.Description = @"<p>My name is Earl. I am fast and write PHP for BCIT schools. here is my loooong story ...  . Here is my project screenshot <img src=""https://cdn3.iconfinder.com/data/icons/street-food-and-food-trucker-1/64/hamburger-fast-food-patty-bread-512.png"" alt=""Earl's project ""> </p>";
+                    ProfileData.Description = HttpUtility.HtmlEncode(ProfileData.Description);
                     newUserData.ProfileData = ProfileData;
                     DateTime newBirthday = new DateTime(1950, 10, 10);
                     newUserData.Birthday = newBirthday;
@@ -85,8 +88,8 @@ namespace BadgeBookAPI.Data
             if (await userManager.FindByEmailAsync("user3") == null)
             {
                 IdentityUser newUser = new IdentityUser();
-                newUser.Email = "user3";
-                newUser.UserName = "user3";
+                newUser.Email = "user3@gmail.com";
+                newUser.UserName = "user3@gmail.com";
                 var result = await userManager.CreateAsync(newUser, "P@$$w0rd");
                 if (result.Succeeded)
                 {
@@ -98,7 +101,8 @@ namespace BadgeBookAPI.Data
                     newUserData.LastName = "bruce3";
                     Profile ProfileData = new Profile();
                     ProfileData.UID = newUser.Id;
-                    ProfileData.Description = "";
+                    ProfileData.Description = @"<p>My name is Earl. I am fast and write PHP for BCIT schools. here is my loooong story ...  . Here is my project screenshot <img src=""https://cdn3.iconfinder.com/data/icons/street-food-and-food-trucker-1/64/hamburger-fast-food-patty-bread-512.png"" alt=""Earl's project ""> </p>";
+                    ProfileData.Description = HttpUtility.HtmlEncode(ProfileData.Description);
                     newUserData.ProfileData = ProfileData;
                     DateTime newBirthday = new DateTime(1950, 10, 10);
                     newUserData.Birthday = newBirthday;

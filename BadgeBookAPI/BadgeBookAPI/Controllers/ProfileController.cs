@@ -27,7 +27,6 @@ namespace BadgeBookAPI.Controllers
             _context = context;
         }
 
-
         [EnableCors("AllAccessCors")]
         [HttpGet("{id}")]
         public async Task<ActionResult<string>> getUserProfile(string id)
@@ -57,9 +56,9 @@ namespace BadgeBookAPI.Controllers
             }
             return JsonConvert.SerializeObject(response);
         }
-
+        //incomplete function just a place holder...
         [EnableCors("AllAccessCors")]
-        [HttpGet("{id}")]
+        [HttpPut("setProfile/{id}")]
         public async Task<ActionResult<string>> setUserProfile(string id)
         {
             APIResponse response = new APIResponse();
