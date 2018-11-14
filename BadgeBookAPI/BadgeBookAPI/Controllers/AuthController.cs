@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -80,39 +81,45 @@ namespace BadgeBookAPI.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<string>> UserLogin([FromBody] LoginViewModel model)
         {
-            var user = await _userManager.FindByNameAsync(model.Email);
-            if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
+            try
             {
-                var claim = new[] {
-                    new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                };
-                ClaimsIdentity claimsIdentity = new ClaimsIdentity(claim, "Token");
-                var userRoles = await _userManager.GetRolesAsync(user);
-
-                foreach (var role in userRoles)
+                var user = await _userManager.FindByNameAsync(model.Email);
+                if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
                 {
-                    claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role));
+                    var claim = new[] {
+                        new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                    };
+                    ClaimsIdentity claimsIdentity = new ClaimsIdentity(claim, "Token");
+                    var userRoles = await _userManager.GetRolesAsync(user);
+
+                    foreach (var role in userRoles)
+                    {
+                        claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role));
+                    }
+
+                    var signinKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(_configuration["Jwt:SigningKey"]));
+
+                    int expiryInMinutes = Convert.ToInt32(_configuration["Jwt:ExpiryInMinutes"]);
+
+                    var token = new JwtSecurityToken(
+                        issuer: _configuration["Jwt:Site"],
+                        audience: _configuration["Jwt:Site"],
+                        claims: claimsIdentity.Claims,
+                        expires: DateTime.UtcNow.AddMinutes(expiryInMinutes),
+                        signingCredentials: new SigningCredentials(signinKey, SecurityAlgorithms.HmacSha256)
+                    );
+
+                    return Ok(
+                        new
+                        {
+                            token = new JwtSecurityTokenHandler().WriteToken(token),
+                            expiration = token.ValidTo
+                        });
                 }
-
-                var signinKey = new SymmetricSecurityKey(
-                  Encoding.UTF8.GetBytes(_configuration["Jwt:SigningKey"]));
-
-                int expiryInMinutes = Convert.ToInt32(_configuration["Jwt:ExpiryInMinutes"]);
-
-                var token = new JwtSecurityToken(
-                  issuer: _configuration["Jwt:Site"],
-                  audience: _configuration["Jwt:Site"],
-                  claims: claimsIdentity.Claims,
-                  expires: DateTime.UtcNow.AddMinutes(expiryInMinutes),
-                  signingCredentials: new SigningCredentials(signinKey, SecurityAlgorithms.HmacSha256)
-                );
-
-                return Ok(
-                  new
-                  {
-                      token = new JwtSecurityTokenHandler().WriteToken(token),
-                      expiration = token.ValidTo
-                  });
+            } catch(Exception e)
+            {
+                Debug.WriteLine(e.Message);
             }
             return Unauthorized();
         }
