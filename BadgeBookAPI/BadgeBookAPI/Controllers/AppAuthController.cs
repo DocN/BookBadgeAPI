@@ -7,28 +7,25 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using BadgeBookAPI.Data;
-using BadgeBookAPI.Models;
 using BadgeBookAPI.ViewModels;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
 
 namespace BadgeBookAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-
-    public class AuthController : Controller
+    public class AppAuthController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IConfiguration _configuration;
         private readonly ApplicationDBContext _context;
-        private readonly string DEFAULT_ROLE = "User";
+        private readonly string DEFAULT_ROLE = "App";
 
-        public AuthController(ApplicationDBContext context, UserManager<IdentityUser> userManager, IConfiguration configuration)
+        public AppAuthController(ApplicationDBContext context, UserManager<IdentityUser> userManager, IConfiguration configuration)
         {
             _userManager = userManager;
             _configuration = configuration;
@@ -36,61 +33,15 @@ namespace BadgeBookAPI.Controllers
         }
 
         [EnableCors("AllAccessCors")]
-        [HttpPost("register")]
-        public async Task<ActionResult<string>> UserRegister([FromBody] RegisterViewModel model)
-        {
-            APIResponse response = new APIResponse();
-
-            try
-            {
-                var newUser = new IdentityUser
-                {
-                    Email = model.Email,
-                    UserName = model.Email
-                };
-                var result = await _userManager.CreateAsync(newUser, model.Password);
-                if (result.Succeeded)
-                {
-                    await _userManager.AddToRoleAsync(newUser, DEFAULT_ROLE);
-                    UserData newUserData = new UserData();
-                    newUserData.UID = newUser.Id;
-                    newUserData.Country = model.Country;
-                    newUserData.FirstName = model.FirstName;
-                    newUserData.LastName = model.LastName;
-                    Profile ProfileData = new Profile();
-                    ProfileData.UID = newUser.Id;
-                    ProfileData.Description = "";
-                    newUserData.ProfileData = ProfileData;
-                    DateTime newBirthday = new DateTime(model.BirthYear, model.BirthMonth, model.BirthDay);
-                    newUserData.Birthday = newBirthday;
-                    _context.Profile.Add(ProfileData);
-                    _context.UserData.Add(newUserData);
-                    
-                    _context.SaveChanges();
-                    response.Message = "Succesfully Registered " + newUser.UserName;
-                    response.Success = true;
-                    return JsonConvert.SerializeObject(response);
-                }
-            } catch(Exception e)
-            {
-                response.Message = "Failed to create user " + e.Message;
-                response.Success = false;
-                return JsonConvert.SerializeObject(response);
-            }
-            response.Message = "Failed to create user, unknown error";
-            response.Success = false;
-            return JsonConvert.SerializeObject(response);
-        }
-
-        [EnableCors("AllAccessCors")]
-        [HttpPost("login")]
+        [HttpPost]
         public async Task<ActionResult<string>> UserLogin([FromBody] LoginViewModel model)
         {
             try
             {
                 var user = await _userManager.FindByNameAsync(model.Email);
-                bool isApp = await checkIfAppRole(user);
-                if(isApp)
+                bool isAppRole = await checkIfAppRole(user);
+                
+                if(!isAppRole)
                 {
                     return Unauthorized();
                 }
@@ -110,7 +61,8 @@ namespace BadgeBookAPI.Controllers
                     var signinKey = new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(_configuration["Jwt:SigningKey"]));
 
-                    int expiryInMinutes = Convert.ToInt32(_configuration["Jwt:ExpiryInMinutes"]);
+                    //one year expire time
+                    int expiryInMinutes = 525600;
 
                     var token = new JwtSecurityToken(
                         issuer: _configuration["Jwt:Site"],
@@ -127,7 +79,8 @@ namespace BadgeBookAPI.Controllers
                             expiration = token.ValidTo
                         });
                 }
-            } catch(Exception e)
+            }
+            catch (Exception e)
             {
                 Debug.WriteLine(e.Message);
             }
@@ -138,12 +91,12 @@ namespace BadgeBookAPI.Controllers
         public async Task<bool> checkIfAppRole(IdentityUser user)
         {
             //check if user is an app
-            if(user != null)
+            if (user != null)
             {
                 var uRole = await _userManager.GetRolesAsync(user);
                 foreach (var role in uRole)
                 {
-                    if (role.Equals("App"))
+                    if (role.Equals(DEFAULT_ROLE))
                     {
                         return true;
                     }
@@ -154,4 +107,3 @@ namespace BadgeBookAPI.Controllers
         }
     }
 }
- 

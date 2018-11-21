@@ -128,7 +128,7 @@ namespace BadgeBookAPI.Data
                 {
                     IdentityUser newUser = new IdentityUser();
                     newUser.Email = app + "@gmail.com";
-                    newUser.UserName = app;
+                    newUser.UserName = app + "@gmail.com";
                     var result = await userManager.CreateAsync(newUser, "P@$$w0rd");
                     if (result.Succeeded)
                     {
