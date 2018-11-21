@@ -12,3 +12,4 @@ C:\ASP\Amirmeme\BadgeBookAPI\BadgeBookAPI\obj\Debug\netcoreapp2.1\BadgeBookAPI.A
 C:\ASP\Amirmeme\BadgeBookAPI\BadgeBookAPI\obj\Debug\netcoreapp2.1\BadgeBookAPI.RazorTargetAssemblyInfo.cache
 C:\ASP\Amirmeme\BadgeBookAPI\BadgeBookAPI\obj\Debug\netcoreapp2.1\BadgeBookAPI.dll
 C:\ASP\Amirmeme\BadgeBookAPI\BadgeBookAPI\obj\Debug\netcoreapp2.1\BadgeBookAPI.pdb
+C:\asp\amirmeme\BadgeBookAPI\BadgeBookAPI\obj\Debug\netcoreapp2.1\UserSecretsAssemblyInfo.cs

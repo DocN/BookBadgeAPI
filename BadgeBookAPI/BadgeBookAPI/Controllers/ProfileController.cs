@@ -56,37 +56,6 @@ namespace BadgeBookAPI.Controllers
             }
             return JsonConvert.SerializeObject(response);
         }
-        //incomplete function just a place holder...
-        [EnableCors("AllAccessCors")]
-        [HttpPut("setProfile/{id}")]
-        public async Task<ActionResult<string>> setUserProfile(string id)
-        {
-            APIResponse response = new APIResponse();
-
-            try
-            {
-                IdentityUser currentUser = await _userManager.FindByIdAsync(id);
-                if (currentUser == null)
-                {
-                    throw new Exception("Invalid user ID");
-                }
-                UserData currentUserData = this.getUserData(currentUser.Id);
-                CompactIdentityUser compactDataUser = new CompactIdentityUser();
-                compactDataUser.Username = currentUser.UserName;
-                compactDataUser.Email = currentUser.Email;
-                compactDataUser.UID = currentUser.Id;
-
-                compactDataUser.UserData = currentUserData;
-                response.Data = compactDataUser;
-                return JsonConvert.SerializeObject(response);
-            }
-            catch (Exception e)
-            {
-                response.Message = "Error: " + e.Message;
-                response.Success = false;
-            }
-            return JsonConvert.SerializeObject(response);
-        }
 
         /* UserData Function 
          * Input - User ID

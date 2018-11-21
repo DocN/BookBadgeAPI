@@ -1,0 +1,15 @@
+C:\asp\amirmeme\BadgeBookAPI\BadgeBookAPI\bin\Release\netcoreapp2.1\BadgeBookAPI.deps.json
+C:\asp\amirmeme\BadgeBookAPI\BadgeBookAPI\bin\Release\netcoreapp2.1\BadgeBookAPI.runtimeconfig.json
+C:\asp\amirmeme\BadgeBookAPI\BadgeBookAPI\bin\Release\netcoreapp2.1\BadgeBookAPI.runtimeconfig.dev.json
+C:\asp\amirmeme\BadgeBookAPI\BadgeBookAPI\bin\Release\netcoreapp2.1\BadgeBookAPI.dll
+C:\asp\amirmeme\BadgeBookAPI\BadgeBookAPI\bin\Release\netcoreapp2.1\BadgeBookAPI.pdb
+C:\asp\amirmeme\BadgeBookAPI\BadgeBookAPI\obj\Release\netcoreapp2.1\BadgeBookAPI.csprojAssemblyReference.cache
+C:\asp\amirmeme\BadgeBookAPI\BadgeBookAPI\obj\Release\netcoreapp2.1\BadgeBookAPI.csproj.CoreCompileInputs.cache
+C:\asp\amirmeme\BadgeBookAPI\BadgeBookAPI\obj\Release\netcoreapp2.1\BadgeBookAPI.RazorAssemblyInfo.cache
+C:\asp\amirmeme\BadgeBookAPI\BadgeBookAPI\obj\Release\netcoreapp2.1\BadgeBookAPI.RazorAssemblyInfo.cs
+C:\asp\amirmeme\BadgeBookAPI\BadgeBookAPI\obj\Release\netcoreapp2.1\UserSecretsAssemblyInfo.cs
+C:\asp\amirmeme\BadgeBookAPI\BadgeBookAPI\obj\Release\netcoreapp2.1\BadgeBookAPI.AssemblyInfoInputs.cache
+C:\asp\amirmeme\BadgeBookAPI\BadgeBookAPI\obj\Release\netcoreapp2.1\BadgeBookAPI.AssemblyInfo.cs
+C:\asp\amirmeme\BadgeBookAPI\BadgeBookAPI\obj\Release\netcoreapp2.1\BadgeBookAPI.RazorTargetAssemblyInfo.cache
+C:\asp\amirmeme\BadgeBookAPI\BadgeBookAPI\obj\Release\netcoreapp2.1\BadgeBookAPI.dll
+C:\asp\amirmeme\BadgeBookAPI\BadgeBookAPI\obj\Release\netcoreapp2.1\BadgeBookAPI.pdb
