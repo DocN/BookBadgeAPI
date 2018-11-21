@@ -13,14 +13,13 @@ namespace BadgeBookAPI.Data
         public static async Task Initialize(ApplicationDBContext context,
                                RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
         {
-            String adminId1 = "";
-            String adminId2 = "";
 
             string role1 = "Admin";
-            string desc1 = "This is the administrator role";
+            //string desc1 = "This is the administrator role";
 
             string role2 = "User";
-            string desc2 = "This is the members role";
+            //string desc2 = "This is the members role";
+
             context.Database.EnsureCreated();
             if (await roleManager.FindByNameAsync(role1) == null)
             {
@@ -30,6 +29,8 @@ namespace BadgeBookAPI.Data
             {
                 await roleManager.CreateAsync(new IdentityRole(role2));
             }
+
+            await createAppAuth(context, roleManager, userManager);
 
             if (await userManager.FindByEmailAsync("user1") == null)
             {
@@ -111,7 +112,30 @@ namespace BadgeBookAPI.Data
                     context.SaveChanges();
                 }
             }
+        }
 
+        private static async Task createAppAuth(ApplicationDBContext context, RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
+        {
+            string role3 = "App";
+            string[] apps = { "hangman", "webcam", "tank" };
+            if (await roleManager.FindByNameAsync(role3) == null)
+            {
+                await roleManager.CreateAsync(new IdentityRole(role3));
+            }
+            foreach(var app in apps)
+            {
+                if (await userManager.FindByEmailAsync(app) == null)
+                {
+                    IdentityUser newUser = new IdentityUser();
+                    newUser.Email = app + "@gmail.com";
+                    newUser.UserName = app;
+                    var result = await userManager.CreateAsync(newUser, "P@$$w0rd");
+                    if (result.Succeeded)
+                    {
+                        await userManager.AddToRoleAsync(newUser, "App");
+                    }
+                }
+            }
         }
     }
 }
