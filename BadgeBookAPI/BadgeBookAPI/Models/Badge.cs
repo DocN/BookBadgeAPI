@@ -10,5 +10,6 @@ namespace BadgeBookAPI.Models
         public string BadgeID { get; set; }
         public string ImageURL { get; set; }
         public string BadgeName { get; set; }
+        public string BadgeDescription { get; set; }
     }
 }
