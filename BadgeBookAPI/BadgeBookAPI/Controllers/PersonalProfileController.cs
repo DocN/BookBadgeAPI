@@ -29,6 +29,36 @@ namespace BadgeBookAPI.Controllers
             _configuration = configuration;
             _context = context;
         }
+        [EnableCors("AllAccessCors")]
+        [HttpGet]
+        public async Task<ActionResult<string>> getUserData()
+        {
+            APIResponse response = new APIResponse();
+            try
+            {
+                var currentUsername = User.Claims.Where(c => c.Type.Equals(USER_NAME_IDENT)).FirstOrDefault().Value;
+                var currentUser = await _userManager.FindByNameAsync(currentUsername);
+                CompactIdentityUser userDataCompact = new CompactIdentityUser();
+                userDataCompact.Username = currentUser.Email;
+                userDataCompact.Email = currentUser.Email;
+                userDataCompact.UID = currentUser.Id;
+                UserData currentUserData = _context.UserData.Where(c => c.UID.Equals(currentUser.Id)).FirstOrDefault();
+                userDataCompact.UserData = currentUserData;
+                userDataCompact.BirthDay = currentUserData.Birthday.Day;
+                userDataCompact.BirthMonth = currentUserData.Birthday.Month;
+                userDataCompact.BirthYear = currentUserData.Birthday.Year;
+                response.Data = userDataCompact;
+                response.Message = "successfully retrieved user data";
+                response.Success = true;
+                return JsonConvert.SerializeObject(response);
+            } catch(Exception e)
+            {
+
+            }
+            response.Message = "error retriving user data";
+            response.Success = false;
+            return JsonConvert.SerializeObject(response);
+        }
 
         [EnableCors("AllAccessCors")]
         [HttpPost("editUser")]
@@ -64,6 +94,36 @@ namespace BadgeBookAPI.Controllers
                 return JsonConvert.SerializeObject(response);
             }
             response.Message = "Unknown error Unable to edit user data";
+            response.Success = false;
+            return JsonConvert.SerializeObject(response);
+        }
+
+        [EnableCors("AllAccessCors")]
+        [HttpGet("getDescription")]
+        public async Task<ActionResult<string>> getProfileDescription()
+        {
+            APIResponse response = new APIResponse();
+            try
+            {
+                var currentUsername = User.Claims.Where(c => c.Type.Equals(USER_NAME_IDENT)).FirstOrDefault().Value;
+                var currentUser = await _userManager.FindByNameAsync(currentUsername);
+                if(currentUser == null)
+                {
+                    response.Message = "Not logged in";
+                    response.Success = true;
+                    return JsonConvert.SerializeObject(response);
+                }
+                var description = _context.Profile.Where(c => c.UID.Equals(currentUser.Id)).FirstOrDefault();
+                response.Data = description;
+                response.Message = "successfully retrieved user data";
+                response.Success = true;
+                return JsonConvert.SerializeObject(response);
+            }
+            catch (Exception e)
+            {
+
+            }
+            response.Message = "error retriving description";
             response.Success = false;
             return JsonConvert.SerializeObject(response);
         }

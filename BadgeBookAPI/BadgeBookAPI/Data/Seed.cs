@@ -50,7 +50,7 @@ namespace BadgeBookAPI.Data
                     Profile ProfileData = new Profile();
                     ProfileData.UID = newUser.Id;
                     ProfileData.Description = @"<p>My name is Earl. I am fast and write PHP for BCIT schools. here is my loooong story ...  . Here is my project screenshot <img src=""https://cdn3.iconfinder.com/data/icons/street-food-and-food-trucker-1/64/hamburger-fast-food-patty-bread-512.png"" alt=""Earl's project ""> </p>";
-                    ProfileData.Description = HttpUtility.HtmlEncode(ProfileData.Description);
+                    //ProfileData.Description = HttpUtility.HtmlEncode(ProfileData.Description);
                     newUserData.ProfileData = ProfileData;
                     DateTime newBirthday = new DateTime(1950, 10, 10);
                     newUserData.Birthday = newBirthday;
@@ -77,7 +77,7 @@ namespace BadgeBookAPI.Data
                     Profile ProfileData = new Profile();
                     ProfileData.UID = newUser.Id;
                     ProfileData.Description = @"<p>My name is Earl. I am fast and write PHP for BCIT schools. here is my loooong story ...  . Here is my project screenshot <img src=""https://cdn3.iconfinder.com/data/icons/street-food-and-food-trucker-1/64/hamburger-fast-food-patty-bread-512.png"" alt=""Earl's project ""> </p>";
-                    ProfileData.Description = HttpUtility.HtmlEncode(ProfileData.Description);
+                    //ProfileData.Description = HttpUtility.HtmlEncode(ProfileData.Description);
                     newUserData.ProfileData = ProfileData;
                     DateTime newBirthday = new DateTime(1950, 10, 10);
                     newUserData.Birthday = newBirthday;
@@ -103,7 +103,7 @@ namespace BadgeBookAPI.Data
                     Profile ProfileData = new Profile();
                     ProfileData.UID = newUser.Id;
                     ProfileData.Description = @"<p>My name is Earl. I am fast and write PHP for BCIT schools. here is my loooong story ...  . Here is my project screenshot <img src=""https://cdn3.iconfinder.com/data/icons/street-food-and-food-trucker-1/64/hamburger-fast-food-patty-bread-512.png"" alt=""Earl's project ""> </p>";
-                    ProfileData.Description = HttpUtility.HtmlEncode(ProfileData.Description);
+                    //ProfileData.Description = HttpUtility.HtmlEncode(ProfileData.Description);
                     newUserData.ProfileData = ProfileData;
                     DateTime newBirthday = new DateTime(1950, 10, 10);
                     newUserData.Birthday = newBirthday;
