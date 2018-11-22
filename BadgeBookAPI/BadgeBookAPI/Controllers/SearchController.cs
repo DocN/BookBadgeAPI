@@ -68,6 +68,9 @@ namespace BadgeBookAPI.Controllers
                         matchCompactUser.Username = matchedUser.UserName;
                         matchCompactUser.UID = profile.UID;
                         matchCompactUser.UserData = _context.UserData.Where(c => c.UID.Equals(profile.UID)).FirstOrDefault();
+                        matchCompactUser.BirthDay = matchCompactUser.UserData.Birthday.Day;
+                        matchCompactUser.BirthMonth = matchCompactUser.UserData.Birthday.Month;
+                        matchCompactUser.BirthYear = matchCompactUser.UserData.Birthday.Year;
                         matchCompactUser.UserData.ProfileData = profile;
                         validProfiles.Add(matchCompactUser);
                         foundNothing = false;

@@ -47,6 +47,9 @@ namespace BadgeBookAPI.Controllers
                 compactDataUser.UID = currentUser.Id;
 
                 compactDataUser.UserData = currentUserData;
+                compactDataUser.BirthDay = currentUserData.Birthday.Day;
+                compactDataUser.BirthMonth = currentUserData.Birthday.Month;
+                compactDataUser.BirthYear = currentUserData.Birthday.Year;
                 response.Data = compactDataUser;
                 return JsonConvert.SerializeObject(response);
             } catch(Exception e)
