@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -171,6 +173,47 @@ namespace BadgeBookAPI.Controllers
             return JsonConvert.SerializeObject(response);
         }
 
+        [EnableCors("AllAccessCors")]
+        [HttpPost("resetPassword")]
+        public async Task<string> ResetPassword([FromBody] ResetPasswordViewModel model)
+        {
+
+            APIResponse response = new APIResponse();
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user != null)
+            {
+                var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+                await SendAsync(model.Email, resetToken);
+            }
+            response.Message = "If the account exists a confirmation email was sent";
+            response.Success = true;
+            return JsonConvert.SerializeObject(response);
+        }
+        public Task SendAsync(string email, string resetToken)
+        {
+            var client = new SmtpClient
+            {
+                Host = "smtp.gmail.com",
+                Port = 587,
+                Credentials = new NetworkCredential("badgebookme@gmail.com", "passpassword123"),
+                EnableSsl = true,
+            };
+
+            var @from = new MailAddress("badgebookme@gmail.com", "Badge Book Recovery email no reply");
+            var to = new MailAddress(email);
+
+            var mail = new MailMessage(@from, to)
+            {
+                Subject = "Your Recovery Token",
+                Body = "Paste this token into the recovery page to reset your password: <br> <br>" + resetToken,
+                IsBodyHtml = true,
+            };
+
+            client.Send(mail);
+
+            return Task.FromResult(0);
+        }
+
         /* checkIfAppRole function is used for checking if a user is part of the app role */
         public async Task<bool> checkIfAppRole(IdentityUser user)
         {
@@ -189,6 +232,8 @@ namespace BadgeBookAPI.Controllers
 
             return false;
         }
+
+
     }
 }
  
