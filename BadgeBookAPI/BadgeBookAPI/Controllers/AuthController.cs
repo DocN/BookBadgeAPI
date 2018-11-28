@@ -177,13 +177,18 @@ namespace BadgeBookAPI.Controllers
         [HttpPost("resetPassword")]
         public async Task<string> ResetPassword([FromBody] ResetPasswordViewModel model)
         {
-
             APIResponse response = new APIResponse();
-            var user = await _userManager.FindByEmailAsync(model.Email);
-            if (user != null)
+            try
             {
-                var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-                await SendAsync(model.Email, resetToken);
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    await SendAsync(model.Email, resetToken);
+                }
+            } catch(Exception e)
+            {
+
             }
             response.Message = "If the account exists a confirmation email was sent";
             response.Success = true;
@@ -204,7 +209,7 @@ namespace BadgeBookAPI.Controllers
 
             var mail = new MailMessage(@from, to)
             {
-                Subject = "Your Recovery Token",
+                Subject = "Your Badge Book Recovery Token",
                 Body = "Paste this token into the recovery page to reset your password: <br> <br>" + resetToken,
                 IsBodyHtml = true,
             };
@@ -212,6 +217,33 @@ namespace BadgeBookAPI.Controllers
             client.Send(mail);
 
             return Task.FromResult(0);
+        }
+
+        [EnableCors("AllAccessCors")]
+        [HttpPost("resetPasswordwtoken")]
+        public async Task<string> ResetPasswordWithToken([FromBody] ResetPasswordWTokenViewModel model)
+        {
+            APIResponse response = new APIResponse();
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    var result = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
+                    if (result.Succeeded)
+                    {
+                        response.Message = "Password Sucessfully Reset";
+                        response.Success = true;
+                        return JsonConvert.SerializeObject(response);
+                    }
+                }
+            } catch(Exception e)
+            {
+
+            }
+            response.Message = "Failed to reset password";
+            response.Success = false;
+            return JsonConvert.SerializeObject(response);
         }
 
         /* checkIfAppRole function is used for checking if a user is part of the app role */
