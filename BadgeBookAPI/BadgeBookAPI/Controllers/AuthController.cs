@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using BadgeBookAPI.Data;
 using BadgeBookAPI.Models;
 using BadgeBookAPI.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +28,7 @@ namespace BadgeBookAPI.Controllers
         private readonly IConfiguration _configuration;
         private readonly ApplicationDBContext _context;
         private readonly string DEFAULT_ROLE = "User";
+        private readonly string NAME_IDEN_TOKEN = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
 
         public AuthController(ApplicationDBContext context, UserManager<IdentityUser> userManager, IConfiguration configuration)
         {
@@ -132,6 +134,42 @@ namespace BadgeBookAPI.Controllers
                 Debug.WriteLine(e.Message);
             }
             return Unauthorized();
+        }
+
+        [EnableCors("AllAccessCors")]
+        [Authorize(Roles = "User")]
+        [HttpPost("changePassword")]
+        public async Task<string> ChangePassword([FromBody] ChangePasswordViewModel model)
+        {
+            APIResponse response = new APIResponse();
+            try
+            {
+                var tokenClaims = User.Claims.Select(c =>
+                    new
+                    {
+                        Type = c.Type,
+                        Value = c.Value
+                    });
+
+                var username = tokenClaims.Where(c=>c.Type.Equals(NAME_IDEN_TOKEN)).FirstOrDefault().Value;
+                Debug.WriteLine("here bitch " + username);
+                var currentUser = await _userManager.FindByNameAsync(username);
+                var result = await _userManager.ChangePasswordAsync(currentUser, model.OldPassword, model.NewPassword);
+                if(result.Succeeded)
+                {
+                    response.Message = "Successfully change password for user " + username;
+                    response.Success = true;
+                }
+                else
+                {
+                    throw new Exception("Invalid old password");
+                }
+            } catch(Exception e)
+            {
+                response.Message = e.Message;
+                response.Success = false;
+            }
+            return JsonConvert.SerializeObject(response);
         }
 
         /* checkIfAppRole function is used for checking if a user is part of the app role */
