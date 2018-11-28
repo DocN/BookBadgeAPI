@@ -152,7 +152,6 @@ namespace BadgeBookAPI.Controllers
                     });
 
                 var username = tokenClaims.Where(c=>c.Type.Equals(NAME_IDEN_TOKEN)).FirstOrDefault().Value;
-                Debug.WriteLine("here bitch " + username);
                 var currentUser = await _userManager.FindByNameAsync(username);
                 var result = await _userManager.ChangePasswordAsync(currentUser, model.OldPassword, model.NewPassword);
                 if(result.Succeeded)
