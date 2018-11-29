@@ -25,12 +25,16 @@ namespace BadgeBookAPI.Controllers
             _configuration = configuration;
             _context = context;
         }
+
+        /*
         [EnableCors("AllAccessCors")]
         [HttpPost("RecMsg")]
         public async Task<ActionResult<string>> sendMessage()
         {
 
         }
+
+         */
 
         [EnableCors("AllAccessCors")]
         [HttpGet("RecMsg")]

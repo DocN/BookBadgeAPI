@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <parameters>
-  <parameter name="IIS Web Application Name" description="" value="BadgeAPI" tags="IisApp">
+  <parameter name="IIS Web Application Name" description="" value="BadgeBookAPI20181129125814" tags="IisApp">
     <parameterEntry kind="ProviderPath" scope="IisApp" match="^C:\\asp\\amirmeme\\BadgeBookAPI\\BadgeBookAPI\\obj\\Release\\netcoreapp2\.1\\PubTmp\\Out\\$" />
   </parameter>
 </parameters>

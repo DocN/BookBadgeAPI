@@ -137,6 +137,32 @@ namespace BadgeBookAPI.Data
                         context.SaveChanges();
                 }
             }
+            if (await userManager.FindByEmailAsync("admin") == null)
+            {
+                IdentityUser newUser = new IdentityUser();
+                newUser.Email = "admin@gmail.com";
+                newUser.UserName = "admin@gmail.com";
+                var result = await userManager.CreateAsync(newUser, "P@$$w0rd");
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(newUser, "Admin");
+                    UserData newUserData = new UserData();
+                    newUserData.UID = newUser.Id;
+                    newUserData.Country = "canada";
+                    newUserData.FirstName = "admin";
+                    newUserData.LastName = "abdulla";
+                    Profile ProfileData = new Profile();
+                    ProfileData.UID = newUser.Id;
+                    ProfileData.Description = @"";
+                    //ProfileData.Description = HttpUtility.HtmlEncode(ProfileData.Description);
+                    newUserData.ProfileData = ProfileData;
+                    DateTime newBirthday = new DateTime(1950, 10, 10);
+                    newUserData.Birthday = newBirthday;
+                    context.Profile.Add(ProfileData);
+                    context.UserData.Add(newUserData);
+                    context.SaveChanges();
+                }
+            }
         }
         private static async Task createAppAuth(ApplicationDBContext context, RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
         {
