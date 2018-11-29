@@ -59,6 +59,24 @@ namespace BadgeBookAPI.Migrations
                     b.ToTable("Badge");
                 });
 
+            modelBuilder.Entity("BadgeBookAPI.Models.Message", b =>
+                {
+                    b.Property<string>("MessageID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Msg");
+
+                    b.Property<string>("ReceiverUID");
+
+                    b.Property<string>("SenderUID");
+
+                    b.Property<DateTime>("SentTime");
+
+                    b.HasKey("MessageID");
+
+                    b.ToTable("Messages");
+                });
+
             modelBuilder.Entity("BadgeBookAPI.Models.Profile", b =>
                 {
                     b.Property<string>("ProfileID")

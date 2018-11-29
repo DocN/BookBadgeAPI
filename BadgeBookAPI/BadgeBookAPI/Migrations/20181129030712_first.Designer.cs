@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BadgeBookAPI.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20181114025304_added profilebadge")]
-    partial class addedprofilebadge
+    [Migration("20181129030712_first")]
+    partial class first
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,82 @@ namespace BadgeBookAPI.Migrations
                 .HasAnnotation("ProductVersion", "2.1.3-rtm-32065")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("BadgeBookAPI.Models.Application", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("AppUrl");
+
+                    b.Property<bool>("Approved");
+
+                    b.Property<string>("Description");
+
+                    b.Property<string>("ImageUrl");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Applications");
+                });
+
+            modelBuilder.Entity("BadgeBookAPI.Models.Badge", b =>
+                {
+                    b.Property<string>("BadgeID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ApplicationId");
+
+                    b.Property<string>("BadgeDescription");
+
+                    b.Property<string>("BadgeName");
+
+                    b.Property<string>("ImageURL");
+
+                    b.Property<string>("ProfileId");
+
+                    b.HasKey("BadgeID");
+
+                    b.ToTable("Badge");
+                });
+
+            modelBuilder.Entity("BadgeBookAPI.Models.Message", b =>
+                {
+                    b.Property<string>("MessageID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Msg");
+
+                    b.Property<string>("ReceiverUID");
+
+                    b.Property<string>("SenderUID");
+
+                    b.Property<DateTime>("SentTime");
+
+                    b.HasKey("MessageID");
+
+                    b.ToTable("Messages");
+                });
+
+            modelBuilder.Entity("BadgeBookAPI.Models.Profile", b =>
+                {
+                    b.Property<string>("ProfileID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Description");
+
+                    b.Property<string>("UID");
+
+                    b.HasKey("ProfileID");
+
+                    b.HasIndex("UID")
+                        .IsUnique()
+                        .HasFilter("[UID] IS NOT NULL");
+
+                    b.ToTable("Profile");
+                });
 
             modelBuilder.Entity("BadgeBookAPI.Models.UserData", b =>
                 {
@@ -203,6 +279,13 @@ namespace BadgeBookAPI.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("BadgeBookAPI.Models.Profile", b =>
+                {
+                    b.HasOne("BadgeBookAPI.Models.UserData")
+                        .WithOne("ProfileData")
+                        .HasForeignKey("BadgeBookAPI.Models.Profile", "UID");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
