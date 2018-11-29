@@ -70,6 +70,8 @@ namespace BadgeBookAPI.Migrations
 
                     b.Property<string>("SenderUID");
 
+                    b.Property<DateTime>("SentTime");
+
                     b.HasKey("MessageID");
 
                     b.ToTable("Messages");

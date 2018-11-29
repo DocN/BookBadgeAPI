@@ -4,10 +4,26 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BadgeBookAPI.Migrations
 {
-    public partial class firstmig : Migration
+    public partial class first : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Applications",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    ImageUrl = table.Column<string>(nullable: true),
+                    AppUrl = table.Column<string>(nullable: true),
+                    Approved = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Applications", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -45,6 +61,37 @@ namespace BadgeBookAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Badge",
+                columns: table => new
+                {
+                    BadgeID = table.Column<string>(nullable: false),
+                    ImageURL = table.Column<string>(nullable: true),
+                    BadgeName = table.Column<string>(nullable: true),
+                    BadgeDescription = table.Column<string>(nullable: true),
+                    ProfileId = table.Column<string>(nullable: true),
+                    ApplicationId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Badge", x => x.BadgeID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Messages",
+                columns: table => new
+                {
+                    MessageID = table.Column<string>(nullable: false),
+                    Msg = table.Column<string>(nullable: true),
+                    SenderUID = table.Column<string>(nullable: true),
+                    ReceiverUID = table.Column<string>(nullable: true),
+                    SentTime = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Messages", x => x.MessageID);
                 });
 
             migrationBuilder.CreateTable(
@@ -168,6 +215,25 @@ namespace BadgeBookAPI.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Profile",
+                columns: table => new
+                {
+                    ProfileID = table.Column<string>(nullable: false),
+                    UID = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Profile", x => x.ProfileID);
+                    table.ForeignKey(
+                        name: "FK_Profile_UserData_UID",
+                        column: x => x.UID,
+                        principalTable: "UserData",
+                        principalColumn: "UID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
@@ -216,10 +282,20 @@ namespace BadgeBookAPI.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Profile_UID",
+                table: "Profile",
+                column: "UID",
+                unique: true,
+                filter: "[UID] IS NOT NULL");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Applications");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -236,13 +312,22 @@ namespace BadgeBookAPI.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "UserData");
+                name: "Badge");
+
+            migrationBuilder.DropTable(
+                name: "Messages");
+
+            migrationBuilder.DropTable(
+                name: "Profile");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "UserData");
         }
     }
 }

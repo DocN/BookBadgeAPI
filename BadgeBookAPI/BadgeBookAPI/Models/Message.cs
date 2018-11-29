@@ -13,5 +13,6 @@ namespace BadgeBookAPI.Models
         public string Msg { get; set; }
         public string SenderUID { get; set; }
         public string ReceiverUID { get; set; }
+        public DateTime SentTime { get; set; }
     }
 }
