@@ -9,6 +9,7 @@ using BadgeBookAPI.Data;
 using BadgeBookAPI.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace BadgeBookAPI.Controllers
 {
@@ -17,10 +18,13 @@ namespace BadgeBookAPI.Controllers
     public class BadgesController : ControllerBase
     {
         private readonly ApplicationDBContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public BadgesController(ApplicationDBContext context)
+        public BadgesController(ApplicationDBContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
+
         }
 
         // GET: api/Badges
@@ -29,7 +33,8 @@ namespace BadgeBookAPI.Controllers
         [HttpGet]
         public IEnumerable<Badge> GetBadge()
         {
-            return _context.Badge;
+            var user = _userManager.FindByNameAsync(User.Identity.Name);
+            return _context.Badge.Where(a => a.ApplicationId == (""+user.Id));
         }
 
         // GET: api/Badges/5

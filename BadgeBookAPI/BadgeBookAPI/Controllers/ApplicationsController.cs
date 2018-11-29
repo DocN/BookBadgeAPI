@@ -118,7 +118,8 @@ namespace BadgeBookAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
-            application.Approved = false;
+            // update this shit later
+            application.Approved = true;
             _context.Applications.Add(application);
             await _context.SaveChangesAsync();
 
