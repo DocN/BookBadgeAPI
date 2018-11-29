@@ -10,8 +10,7 @@ namespace BadgeBookAPI.Data
 {
     public class Seed
     {
-        public static async Task Initialize(ApplicationDBContext context,
-                               RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
+        public static async Task Initialize(ApplicationDBContext context, RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
         {
 
             string role1 = "Admin";
@@ -32,7 +31,7 @@ namespace BadgeBookAPI.Data
 
             await createAppAuth(context, roleManager, userManager);
 
-            if (await userManager.FindByEmailAsync("user1") == null)
+            if (await userManager.FindByEmailAsync("user1@gmail.com") == null)
             {
                 IdentityUser newUser = new IdentityUser();
                 newUser.Email = "user1@gmail.com";
@@ -60,7 +59,7 @@ namespace BadgeBookAPI.Data
                 }
             }
 
-            if (await userManager.FindByEmailAsync("user2") == null)
+            if (await userManager.FindByEmailAsync("user2@gmail.com") == null)
             {
                 IdentityUser newUser = new IdentityUser();
                 newUser.Email = "user2@gmail.com";
@@ -86,7 +85,7 @@ namespace BadgeBookAPI.Data
                     context.SaveChanges();
                 }
             }
-            if (await userManager.FindByEmailAsync("user3") == null)
+            if (await userManager.FindByEmailAsync("user3@gmail.com") == null)
             {
                 IdentityUser newUser = new IdentityUser();
                 newUser.Email = "user3@gmail.com";
@@ -112,34 +111,33 @@ namespace BadgeBookAPI.Data
                     context.SaveChanges();
                 }
             }
-            if (await userManager.FindByEmailAsync("admin") == null)
+            if (await userManager.FindByEmailAsync("031247deagle@gmail.com") == null)
             {
                 IdentityUser newUser = new IdentityUser();
-                newUser.Email = "admin@gmail.com";
-                newUser.UserName = "admin@gmail.com";
+                newUser.Email = "031247deagle@gmail.com";
+                newUser.UserName = "031247deagle@gmail.com";
                 var result = await userManager.CreateAsync(newUser, "P@$$w0rd");
                 if (result.Succeeded)
-                {
-                    await userManager.AddToRoleAsync(newUser, "Admin");
-                    UserData newUserData = new UserData();
-                    newUserData.UID = newUser.Id;
-                    newUserData.Country = "canada";
-                    newUserData.FirstName = "admin";
-                    newUserData.LastName = "abdulla";
-                    Profile ProfileData = new Profile();
-                    ProfileData.UID = newUser.Id;
-                    ProfileData.Description = @"";
-                    //ProfileData.Description = HttpUtility.HtmlEncode(ProfileData.Description);
-                    newUserData.ProfileData = ProfileData;
-                    DateTime newBirthday = new DateTime(1950, 10, 10);
-                    newUserData.Birthday = newBirthday;
-                    context.Profile.Add(ProfileData);
-                    context.UserData.Add(newUserData);
-                    context.SaveChanges();
+                    {
+                        await userManager.AddToRoleAsync(newUser, "User");
+                        UserData newUserData = new UserData();
+                        newUserData.UID = newUser.Id;
+                        newUserData.Country = "canada";
+                        newUserData.FirstName = "Ryan";
+                        newUserData.LastName = "C";
+                        Profile ProfileData = new Profile();
+                        ProfileData.UID = newUser.Id;
+                        ProfileData.Description = @"<p>My name is Earl. I am fast and write PHP for BCIT schools. here is my loooong story ...  . Here is my project screenshot <img src=""https://cdn3.iconfinder.com/data/icons/street-food-and-food-trucker-1/64/hamburger-fast-food-patty-bread-512.png"" alt=""Earl's project ""> </p>";
+                        //ProfileData.Description = HttpUtility.HtmlEncode(ProfileData.Description);
+                        newUserData.ProfileData = ProfileData;
+                        DateTime newBirthday = new DateTime(1950, 10, 10);
+                        newUserData.Birthday = newBirthday;
+                        context.Profile.Add(ProfileData);
+                        context.UserData.Add(newUserData);
+                        context.SaveChanges();
                 }
             }
         }
-
         private static async Task createAppAuth(ApplicationDBContext context, RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
         {
             string role3 = "App";
