@@ -177,5 +177,26 @@ namespace BadgeBookAPI.Controllers
             }
             return JsonConvert.SerializeObject(response);
         }
+
+        [EnableCors("AllAccessCors")]
+        [HttpPost("getUserEmail")]
+        public async Task<ActionResult<string>> getUserEmail([FromBody] GetEmailFromUIDModel model)
+        {
+            APIResponse response = new APIResponse();
+            try
+            {
+                var userIdent = await _userManager.FindByIdAsync(model.UID);
+                response.Data = userIdent.Email;
+                response.Message = "Got email";
+                response.Success = true;
+                
+            }
+            catch (Exception e)
+            {
+                response.Message = "Failed to get email";
+                response.Success = false;
+            }
+            return JsonConvert.SerializeObject(response);
+        }
     }
 }
