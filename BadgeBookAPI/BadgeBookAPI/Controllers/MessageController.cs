@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using BadgeBookAPI.Data;
 using BadgeBookAPI.Models;
+using BadgeBookAPI.ResponseModels;
 using BadgeBookAPI.ViewModels;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
@@ -52,6 +54,7 @@ namespace BadgeBookAPI.Controllers
                     newMessage.Msg = model.Msg;
                     newMessage.SenderUID = userIdent.Id;
                     newMessage.ReceiverUID = model.MsgToUID;
+                    newMessage.Read = false;
                     DateTime currentTime = DateTime.Now;
                     newMessage.SentTime = currentTime;
                     _context.Messages.Add(newMessage);
@@ -69,11 +72,10 @@ namespace BadgeBookAPI.Controllers
 
 
         [EnableCors("AllAccessCors")]
-        [HttpGet("mymsgs")]
+        [HttpGet("getmsgs")]
         public async Task<ActionResult<string>> getMyMessages()
         {
             APIResponse response = new APIResponse();
-
             try
             {
                 var tokenClaims = User.Claims.Select(c =>
@@ -82,13 +84,16 @@ namespace BadgeBookAPI.Controllers
                         Type = c.Type,
                         Value = c.Value
                     });
-
+                
                 var username = tokenClaims.Where(c => c.Type.Equals(NAME_IDEN_TOKEN)).FirstOrDefault().Value;
                 var userIdent = await _userManager.FindByNameAsync(username);
-                if(userIdent != null)
+
+                if (userIdent != null)
                 {
-                    var myMsgs = _context.Messages.Where(c => c.ReceiverUID.Equals(userIdent.Id)).OrderBy(c => c.SentTime).ToList();
-                    response.Data = myMsgs;
+                    var myMsgs = _context.Messages.Where(c => c.ReceiverUID.Equals(userIdent.Id)).ToList();
+                    var msgContainerList = await convertToMsgContainer(myMsgs);
+                    
+                    response.Data = msgContainerList;
                 }
                 response.Message = "Successfully retrieved messages";
                 response.Success = true;
@@ -99,6 +104,39 @@ namespace BadgeBookAPI.Controllers
                 response.Success = false;
             }
             return JsonConvert.SerializeObject(response);
+        }
+
+        public async Task<List<MsgContainer>> convertToMsgContainer(List<Message> messages)
+        {
+            List<EmailSearch> MappedEmails = new List<EmailSearch>();
+            List<MsgContainer> MsgContainerList = new List<MsgContainer>();
+            foreach (var msg in messages)
+            {
+                
+                var currentUID = msg.SenderUID;
+                string currentEmail = "";
+                Debug.WriteLine("wow here fuck" + currentUID);
+                var currentMappedEmail = MappedEmails.Where(c => c.UID.Equals(currentUID)).FirstOrDefault();
+                
+                if (currentMappedEmail == null)
+                {
+                    var currentIdent = await _userManager.FindByIdAsync(currentUID);
+                    EmailSearch currentESearch = new EmailSearch();
+                    currentESearch.Email = currentIdent.Email;
+                    currentESearch.UID = currentUID;
+                    currentEmail = currentIdent.Email;
+                    MappedEmails.Add(currentESearch);
+                }
+                else
+                {
+                    currentEmail = currentMappedEmail.Email;
+                }
+                MsgContainer currentContainer = new MsgContainer();
+                currentContainer.Msg = msg;
+                currentContainer.SenderEmail = currentEmail;
+                MsgContainerList.Add(currentContainer);
+            }
+            return MsgContainerList;
         }
     }
 }
