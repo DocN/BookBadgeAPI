@@ -9,6 +9,7 @@
     <WebStackScaffolding_IsReferencingScriptLibrariesSelected>True</WebStackScaffolding_IsReferencingScriptLibrariesSelected>
     <WebStackScaffolding_LayoutPageFile />
     <WebStackScaffolding_IsAsyncSelected>False</WebStackScaffolding_IsAsyncSelected>
-    <NameOfLastUsedPublishProfile>BadgeBookAPI - Web Deploy</NameOfLastUsedPublishProfile>
+    <NameOfLastUsedPublishProfile>BadgeBookAPI20181129125814 - Web Deploy</NameOfLastUsedPublishProfile>
+    <WebStackScaffolding_DbContextTypeFullName>BadgeBookAPI.Data.ApplicationDBContext</WebStackScaffolding_DbContextTypeFullName>
   </PropertyGroup>
 </Project>

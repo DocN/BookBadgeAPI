@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using BadgeBookAPI.Data;
 using BadgeBookAPI.Models;
 using BadgeBookAPI.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +30,7 @@ namespace BadgeBookAPI.Controllers
         private readonly IConfiguration _configuration;
         private readonly ApplicationDBContext _context;
         private readonly string DEFAULT_ROLE = "User";
+        private readonly string NAME_IDEN_TOKEN = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
 
         public AuthController(ApplicationDBContext context, UserManager<IdentityUser> userManager, IConfiguration configuration)
         {
@@ -134,6 +138,114 @@ namespace BadgeBookAPI.Controllers
             return Unauthorized();
         }
 
+        [EnableCors("AllAccessCors")]
+        [Authorize(Roles = "User")]
+        [HttpPost("changePassword")]
+        public async Task<string> ChangePassword([FromBody] ChangePasswordViewModel model)
+        {
+            APIResponse response = new APIResponse();
+            try
+            {
+                var tokenClaims = User.Claims.Select(c =>
+                    new
+                    {
+                        Type = c.Type,
+                        Value = c.Value
+                    });
+
+                var username = tokenClaims.Where(c=>c.Type.Equals(NAME_IDEN_TOKEN)).FirstOrDefault().Value;
+                var currentUser = await _userManager.FindByNameAsync(username);
+                var result = await _userManager.ChangePasswordAsync(currentUser, model.OldPassword, model.NewPassword);
+                if(result.Succeeded)
+                {
+                    response.Message = "Successfully change password for user " + username;
+                    response.Success = true;
+                }
+                else
+                {
+                    throw new Exception("Invalid old password");
+                }
+            } catch(Exception e)
+            {
+                response.Message = e.Message;
+                response.Success = false;
+            }
+            return JsonConvert.SerializeObject(response);
+        }
+
+        [EnableCors("AllAccessCors")]
+        [HttpPost("resetPassword")]
+        public async Task<string> ResetPassword([FromBody] ResetPasswordViewModel model)
+        {
+            APIResponse response = new APIResponse();
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    await SendAsync(model.Email, resetToken);
+                }
+            } catch(Exception e)
+            {
+
+            }
+            response.Message = "If the account exists a confirmation email was sent";
+            response.Success = true;
+            return JsonConvert.SerializeObject(response);
+        }
+        public Task SendAsync(string email, string resetToken)
+        {
+            var client = new SmtpClient
+            {
+                Host = "smtp.gmail.com",
+                Port = 587,
+                Credentials = new NetworkCredential("badgebookme@gmail.com", "passpassword123"),
+                EnableSsl = true,
+            };
+
+            var @from = new MailAddress("badgebookme@gmail.com", "Badge Book Recovery email no reply");
+            var to = new MailAddress(email);
+
+            var mail = new MailMessage(@from, to)
+            {
+                Subject = "Your Badge Book Recovery Token",
+                Body = "Paste this token into the recovery page to reset your password: <br> <br>" + resetToken,
+                IsBodyHtml = true,
+            };
+
+            client.Send(mail);
+
+            return Task.FromResult(0);
+        }
+
+        [EnableCors("AllAccessCors")]
+        [HttpPost("resetPasswordwtoken")]
+        public async Task<string> ResetPasswordWithToken([FromBody] ResetPasswordWTokenViewModel model)
+        {
+            APIResponse response = new APIResponse();
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    var result = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
+                    if (result.Succeeded)
+                    {
+                        response.Message = "Password Sucessfully Reset";
+                        response.Success = true;
+                        return JsonConvert.SerializeObject(response);
+                    }
+                }
+            } catch(Exception e)
+            {
+
+            }
+            response.Message = "Failed to reset password";
+            response.Success = false;
+            return JsonConvert.SerializeObject(response);
+        }
+
         /* checkIfAppRole function is used for checking if a user is part of the app role */
         public async Task<bool> checkIfAppRole(IdentityUser user)
         {
@@ -152,6 +264,8 @@ namespace BadgeBookAPI.Controllers
 
             return false;
         }
+
+
     }
 }
  
