@@ -6,15 +6,13 @@ using System.Threading.Tasks;
 
 namespace BadgeBookAPI.ViewModels
 {
-    public class SendMsgViewModel
+    public class SendMessageViewModel
     {
         [Required]
-        public string FromUID { get; set; }
-
+        public string MsgToUID { get; set; }
         [Required]
-        public string ToUID { get; set; }
-
-        [Required] 
+        public string Subject { get; set; }
+        [Required]
         public string Msg { get; set; }
     }
 }
