@@ -90,7 +90,7 @@ namespace BadgeBookAPI.Controllers
 
                 if (userIdent != null)
                 {
-                    var myMsgs = _context.Messages.Where(c => c.ReceiverUID.Equals(userIdent.Id)).ToList();
+                    var myMsgs = _context.Messages.Where(c => c.ReceiverUID.Equals(userIdent.Id)).OrderByDescending(c=>c.SentTime).ToList();
                     var msgContainerList = await convertToMsgContainer(myMsgs);
                     
                     response.Data = msgContainerList;
@@ -115,7 +115,6 @@ namespace BadgeBookAPI.Controllers
                 
                 var currentUID = msg.SenderUID;
                 string currentEmail = "";
-                Debug.WriteLine("wow here fuck" + currentUID);
                 var currentMappedEmail = MappedEmails.Where(c => c.UID.Equals(currentUID)).FirstOrDefault();
                 
                 if (currentMappedEmail == null)
@@ -137,6 +136,46 @@ namespace BadgeBookAPI.Controllers
                 MsgContainerList.Add(currentContainer);
             }
             return MsgContainerList;
+        }
+
+        [EnableCors("AllAccessCors")]
+        [HttpPost("setReadStatus")]
+        public async Task<ActionResult<string>> setMsgRead([FromBody] SetMsgReadViewModel model)
+        {
+            APIResponse response = new APIResponse();
+            try
+            {
+                var tokenClaims = User.Claims.Select(c =>
+                    new
+                    {
+                        Type = c.Type,
+                        Value = c.Value
+                    });
+
+                var username = tokenClaims.Where(c => c.Type.Equals(NAME_IDEN_TOKEN)).FirstOrDefault().Value;
+                var userIdent = await _userManager.FindByNameAsync(username);
+                if (userIdent != null)
+                {
+                    var currentMsg = _context.Messages.Where(c => c.MessageID.Equals(model.MsgID)).FirstOrDefault();
+                    if (currentMsg != null)
+                    {
+                        if (currentMsg.ReceiverUID.Equals(userIdent.Id))
+                        {
+                            currentMsg.Read = true;
+                            _context.Messages.Update(currentMsg);
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+                }
+                response.Message = "Successfully change read status on msg " + model.MsgID;
+                response.Success = true;
+            }
+            catch (Exception e)
+            {
+                response.Message = "Failed to change read status " + model.MsgID;
+                response.Success = false;
+            }
+            return JsonConvert.SerializeObject(response);
         }
     }
 }
