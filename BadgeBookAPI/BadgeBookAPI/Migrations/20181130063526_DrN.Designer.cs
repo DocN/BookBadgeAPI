@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BadgeBookAPI.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20181129084831_first")]
-    partial class first
+    [Migration("20181130063526_DrN")]
+    partial class DrN
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -68,11 +68,15 @@ namespace BadgeBookAPI.Migrations
 
                     b.Property<string>("Msg");
 
+                    b.Property<bool>("Read");
+
                     b.Property<string>("ReceiverUID");
 
                     b.Property<string>("SenderUID");
 
                     b.Property<DateTime>("SentTime");
+
+                    b.Property<string>("Subject");
 
                     b.HasKey("MessageID");
 

@@ -66,11 +66,15 @@ namespace BadgeBookAPI.Migrations
 
                     b.Property<string>("Msg");
 
+                    b.Property<bool>("Read");
+
                     b.Property<string>("ReceiverUID");
 
                     b.Property<string>("SenderUID");
 
                     b.Property<DateTime>("SentTime");
+
+                    b.Property<string>("Subject");
 
                     b.HasKey("MessageID");
 

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BadgeBookAPI.Migrations
 {
-    public partial class first : Migration
+    public partial class DrN : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -84,7 +84,9 @@ namespace BadgeBookAPI.Migrations
                 columns: table => new
                 {
                     MessageID = table.Column<string>(nullable: false),
+                    Subject = table.Column<string>(nullable: true),
                     Msg = table.Column<string>(nullable: true),
+                    Read = table.Column<bool>(nullable: false),
                     SenderUID = table.Column<string>(nullable: true),
                     ReceiverUID = table.Column<string>(nullable: true),
                     SentTime = table.Column<DateTime>(nullable: false)
