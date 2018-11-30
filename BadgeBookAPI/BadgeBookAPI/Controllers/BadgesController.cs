@@ -29,7 +29,6 @@ namespace BadgeBookAPI.Controllers
 
         // GET: api/Badges
         [EnableCors("AllAccessCors")]
-        [Authorize(Roles = "App")]
         [HttpGet]
         public IEnumerable<Badge> GetBadge()
         {
@@ -41,21 +40,9 @@ namespace BadgeBookAPI.Controllers
         [EnableCors("AllAccessCors")]
         [Authorize(Roles = "App")]
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetBadge([FromRoute] string id)
+        public IEnumerable<Badge> GetBadge([FromRoute] string id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var badge = await _context.Badge.FindAsync(id);
-
-            if (badge == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(badge);
+            return _context.Badge.Where(a => a.ProfileId == (id));
         }
 
         // PUT: api/Badges/5

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BadgeBookAPI.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20181129030712_first")]
+    [Migration("20181129084831_first")]
     partial class first
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
