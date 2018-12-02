@@ -121,6 +121,7 @@ namespace BadgeBookAPI.Controllers
             // update this shit later
             application.Approved = false;
             var currentIdentUser = await _userManager.FindByNameAsync(application.Name + "@gmail.com");
+            var newApp = new Application();
             if (currentIdentUser == null)
             {
                 IdentityUser newUser = new IdentityUser();
@@ -153,7 +154,15 @@ namespace BadgeBookAPI.Controllers
                         expires: DateTime.UtcNow.AddMinutes(expiryInMinutes),
                         signingCredentials: new SigningCredentials(signinKey, SecurityAlgorithms.HmacSha256)
                     );
+                    newApp.ImageUrl = application.ImageUrl;
+                    newApp.AppUrl = application.AppUrl;
+                    newApp.Name = application.Name;
+                    newApp.Approved = false;
+                    newApp.Description = application.Description;
 
+                    newApp.UID = currentIdentUser.Id;
+                    _context.Applications.Add(newApp);
+                    await _context.SaveChangesAsync();
                     return Ok(
                         new
                         {
@@ -165,10 +174,15 @@ namespace BadgeBookAPI.Controllers
                         });
                 }
             }
-            application.UID = currentIdentUser.Id;
-            _context.Applications.Add(application);
-            await _context.SaveChangesAsync();
+            newApp.ImageUrl = application.ImageUrl;
+            newApp.AppUrl = application.AppUrl;
+            newApp.Name = application.Name;
+            newApp.Approved = false;
+            newApp.Description = application.Description;
 
+            newApp.UID = currentIdentUser.Id;
+            _context.Applications.Add(newApp);
+            await _context.SaveChangesAsync();
             return CreatedAtAction("GetApplication", new { id = application.Id }, application);
         }
 
