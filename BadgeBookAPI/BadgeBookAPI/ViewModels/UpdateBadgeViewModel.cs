@@ -4,17 +4,17 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BadgeBookAPI.Models
+namespace BadgeBookAPI.ViewModels
 {
-    public class Badge
+    public class UpdateBadgeViewModel
     {
-        [Key]
+        [Required]
         public string BadgeID { get; set; }
-        public string UID { get; set; }
+        [Required]
         public string ImageURL { get; set; }
+        [Required]
         public string BadgeName { get; set; }
+        [Required]
         public string BadgeDescription { get; set; }
-
-        public string ApplicationId { get; set; }
     }
 }

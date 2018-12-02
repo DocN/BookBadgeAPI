@@ -34,6 +34,8 @@ namespace BadgeBookAPI.Migrations
 
                     b.Property<string>("Name");
 
+                    b.Property<string>("UID");
+
                     b.HasKey("Id");
 
                     b.ToTable("Applications");
@@ -52,7 +54,7 @@ namespace BadgeBookAPI.Migrations
 
                     b.Property<string>("ImageURL");
 
-                    b.Property<string>("ProfileId");
+                    b.Property<string>("UID");
 
                     b.HasKey("BadgeID");
 

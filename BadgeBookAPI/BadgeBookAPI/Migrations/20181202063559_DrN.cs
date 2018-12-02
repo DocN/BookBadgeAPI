@@ -13,6 +13,7 @@ namespace BadgeBookAPI.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
+                    UID = table.Column<string>(nullable: true),
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     ImageUrl = table.Column<string>(nullable: true),
@@ -68,10 +69,10 @@ namespace BadgeBookAPI.Migrations
                 columns: table => new
                 {
                     BadgeID = table.Column<string>(nullable: false),
+                    UID = table.Column<string>(nullable: true),
                     ImageURL = table.Column<string>(nullable: true),
                     BadgeName = table.Column<string>(nullable: true),
                     BadgeDescription = table.Column<string>(nullable: true),
-                    ProfileId = table.Column<string>(nullable: true),
                     ApplicationId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>

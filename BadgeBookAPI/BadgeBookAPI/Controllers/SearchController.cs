@@ -47,9 +47,22 @@ namespace BadgeBookAPI.Controllers
                     bool foundMatch = true;
                     foreach(var keyword in keywords)
                     {
+                        bool badgeResult = false;
                         UserData currentData = _context.UserData.Where(c => c.UID.Equals(profile.UID)).FirstOrDefault();
-                        
-                        if (currentData != null && currentData.FirstName.Contains(keyword) || currentData.LastName.Contains(keyword))
+                        var identUser = await _userManager.FindByIdAsync(currentData.UID);
+                        var userBadges = _context.Badge.Where(c => c.UID.Equals(identUser.Id)).ToList();
+                        foreach(var badge in userBadges)
+                        {
+                            if(badge.BadgeName.ToLower().Contains(keyword.ToLower()))
+                            {
+                                badgeResult = true;
+                            }
+                            if (badge.BadgeDescription.ToLower().Contains(keyword.ToLower()))
+                            {
+                                badgeResult = true;
+                            }
+                        }
+                        if (currentData != null && currentData.FirstName.ToLower().Contains(keyword.ToLower()) || currentData.LastName.ToLower().Contains(keyword.ToLower()) || identUser.Email.ToLower().Contains(keyword.ToLower()) || badgeResult)
                         {
                             continue;
                         }
