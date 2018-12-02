@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BadgeBookAPI.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20181130063526_DrN")]
+    [Migration("20181202062901_DrN")]
     partial class DrN
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,6 +35,8 @@ namespace BadgeBookAPI.Migrations
                     b.Property<string>("ImageUrl");
 
                     b.Property<string>("Name");
+
+                    b.Property<string>("UID");
 
                     b.HasKey("Id");
 

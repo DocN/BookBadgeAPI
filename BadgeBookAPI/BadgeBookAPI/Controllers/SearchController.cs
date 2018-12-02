@@ -48,8 +48,8 @@ namespace BadgeBookAPI.Controllers
                     foreach(var keyword in keywords)
                     {
                         UserData currentData = _context.UserData.Where(c => c.UID.Equals(profile.UID)).FirstOrDefault();
-                        
-                        if (currentData != null && currentData.FirstName.Contains(keyword) || currentData.LastName.Contains(keyword))
+                        var identUser = await _userManager.FindByIdAsync(currentData.UID);
+                        if (currentData != null && currentData.FirstName.ToLower().Contains(keyword.ToLower()) || currentData.LastName.ToLower().Contains(keyword.ToLower()) || identUser.Email.ToLower().Contains(keyword.ToLower()))
                         {
                             continue;
                         }

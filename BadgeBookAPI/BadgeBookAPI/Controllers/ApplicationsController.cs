@@ -120,10 +120,8 @@ namespace BadgeBookAPI.Controllers
             }
             // update this shit later
             application.Approved = false;
-            _context.Applications.Add(application);
-            await _context.SaveChangesAsync();
-
-            if (await _userManager.FindByNameAsync(application.Name + "@gmail.com") == null)
+            var currentIdentUser = await _userManager.FindByNameAsync(application.Name + "@gmail.com");
+            if (currentIdentUser == null)
             {
                 IdentityUser newUser = new IdentityUser();
                 newUser.Email = application.Name + "@gmail.com";
@@ -132,6 +130,7 @@ namespace BadgeBookAPI.Controllers
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(newUser, "App");
+                    currentIdentUser = newUser;
                     var claim = new[] {
                         new Claim(JwtRegisteredClaimNames.Sub, newUser.UserName),
                     };
@@ -166,7 +165,9 @@ namespace BadgeBookAPI.Controllers
                         });
                 }
             }
-
+            application.UID = currentIdentUser.Id;
+            _context.Applications.Add(application);
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetApplication", new { id = application.Id }, application);
         }

@@ -26,7 +26,16 @@ namespace BadgeBookAPI.Controllers
             _userManager = userManager;
 
         }
+        /*
+        [EnableCors("AllAccessCors")]
+        [Authorize(Roles = "App")]
+        [HttpGet]
+        public async Task<string> assignBadge()
+        {
 
+        }
+        */
+        /*
         // GET: api/Badges
         [EnableCors("AllAccessCors")]
         [HttpGet]
@@ -126,5 +135,6 @@ namespace BadgeBookAPI.Controllers
         {
             return _context.Badge.Any(e => e.BadgeID == id);
         }
+        */
     }
 }

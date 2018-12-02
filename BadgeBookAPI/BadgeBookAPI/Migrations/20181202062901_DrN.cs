@@ -13,6 +13,7 @@ namespace BadgeBookAPI.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
+                    UID = table.Column<string>(nullable: true),
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     ImageUrl = table.Column<string>(nullable: true),
