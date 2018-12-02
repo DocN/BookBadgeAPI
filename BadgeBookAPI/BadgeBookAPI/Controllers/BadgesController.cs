@@ -145,7 +145,7 @@ namespace BadgeBookAPI.Controllers
                 response.Message = "failed to retrieve badges" + e.Message;
                 response.Success = false;
             }
-            response.Message = "failed to retrieve badges" + e.Message;
+            response.Message = "failed to retrieve badges";
             response.Success = false;
             return JsonConvert.SerializeObject(response);
         }
