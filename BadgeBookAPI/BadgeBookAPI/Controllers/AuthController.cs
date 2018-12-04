@@ -102,6 +102,7 @@ namespace BadgeBookAPI.Controllers
                 {
                     var claim = new[] {
                         new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                        new Claim(JwtRegisteredClaimNames.NameId, user.Id),
                     };
                     ClaimsIdentity claimsIdentity = new ClaimsIdentity(claim, "Token");
                     var userRoles = await _userManager.GetRolesAsync(user);
