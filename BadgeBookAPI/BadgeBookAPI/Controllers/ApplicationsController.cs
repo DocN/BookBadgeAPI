@@ -168,9 +168,9 @@ namespace BadgeBookAPI.Controllers
                         {
                             token = new JwtSecurityTokenHandler().WriteToken(token),
                             expiration = token.ValidTo,
-                           id = application.Id,
-                            application
-                    
+                           id = newApp.Id,
+                            newApp
+
                         });
                 }
             }
